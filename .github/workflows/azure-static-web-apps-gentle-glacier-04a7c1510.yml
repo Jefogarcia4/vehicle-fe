@@ -1,6 +1,9 @@
 name: Azure Static Web Apps CI/CD
 
 on:
+  # Permite lanzar el despliegue a mano desde la pestaña Actions, sin tener que
+  # inventar un commit solo para eso.
+  workflow_dispatch:
   push:
     branches:
       - main
