@@ -67,10 +67,14 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GENTLE_GLACIER_04A7C1510 }}
           action: "upload"
           ###### Repository/Build Configurations ######
-          app_location: "/"          # Raíz del repositorio
+          # Con skip_app_build la accion ignora output_location y sube tal cual lo que
+          # haya en app_location. Apuntando a la raiz se llevaba node_modules entero
+          # (200+ MB) y el servidor lo rechazaba por tamano; apuntando a dist sube
+          # solo el sitio compilado, que pesa un par de megas.
+          app_location: "dist"       # Sitio ya compilado por el paso anterior
           api_location: ""           # La API vive en su propio App Service
-          output_location: "dist"    # Lo que produce vite build
-          skip_app_build: true       # Ya se compiló en el paso anterior
+          output_location: ""        # Ya es la carpeta final, no hay subcarpeta
+          skip_app_build: true
           skip_api_build: true
           github_id_token: ${{ steps.idtoken.outputs.result }}
           ###### End of Repository/Build Configurations ######
