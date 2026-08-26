@@ -1,0 +1,236 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Rueda Al Día — Sistema de diseño "Garage Tech"
+   Base grafito + rojo de marca. Los estados (ok / atención /
+   crítico) son parte del sistema, no colores sueltos: toda la
+   app comunica urgencia con la misma escala.
+   ============================================================ */
+@theme {
+  /* ---- Marca: el rojo del logo. El 600 es el color medido del wordmark
+         (#A90B0B) y es el que llevan los botones y los acentos. ---- */
+  --color-brand-50: #fdf2f2;
+  --color-brand-100: #fbe0e0;
+  --color-brand-200: #f5c2c2;
+  --color-brand-300: #e99494;
+  --color-brand-400: #d55e5e;
+  --color-brand-500: #be2f2f;
+  --color-brand-600: #a90b0b;
+  --color-brand-700: #8d0808;
+  --color-brand-800: #740909;
+  --color-brand-900: #5f0d0d;
+  --color-brand-950: #340505;
+
+  /* ---- Grafito: superficies oscuras y texto. Los cuatro tonos de la paleta
+         (#4A4A4A, #424242, #212121, #0A0A0A) son los pasos 600 a 950; el resto
+         de la escala se interpola para tener grises claros utilizables. ---- */
+  --color-carbon-50: #f7f7f7;
+  --color-carbon-100: #ededed;
+  --color-carbon-200: #dcdcdc;
+  --color-carbon-300: #bdbdbd;
+  --color-carbon-400: #949494;
+  --color-carbon-500: #6b6b6b;
+  --color-carbon-600: #4a4a4a;
+  --color-carbon-700: #424242;
+  --color-carbon-800: #212121;
+  --color-carbon-900: #171717;
+  --color-carbon-950: #0a0a0a;
+
+  /* ---- Estados ---- */
+  --color-ok-50: #ecfdf5;
+  --color-ok-100: #d1fae5;
+  --color-ok-500: #10b981;
+  --color-ok-600: #059669;
+  --color-ok-700: #047857;
+
+  --color-warn-50: #fffbeb;
+  --color-warn-100: #fef3c7;
+  --color-warn-500: #f59e0b;
+  --color-warn-600: #d97706;
+  --color-warn-700: #b45309;
+
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+  --color-danger-700: #b91c1c;
+
+  /* ---- Tipografía ---- */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* ---- Radios y sombras ---- */
+  --radius-4xl: 1.75rem;
+  --radius-5xl: 2.25rem;
+  --shadow-card: 0 1px 2px rgb(10 10 10 / 0.05), 0 12px 32px -18px rgb(10 10 10 / 0.26);
+  --shadow-float: 0 18px 48px -20px rgb(10 10 10 / 0.32);
+  --shadow-brand: 0 16px 40px -16px rgb(169 11 11 / 0.45);
+
+  /* ---- Animaciones ---- */
+  --animate-rise: rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-pulse-slow: pulse 3.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-carbon-50 text-carbon-700 font-sans antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display font-semibold text-carbon-900 tracking-tight;
+  }
+
+  ::selection {
+    @apply bg-brand-200 text-brand-900;
+  }
+
+  /* Los inputs numéricos con flechas rompen la alineación de los formularios densos. */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] { -moz-appearance: textfield; }
+}
+
+/* ============================================================
+   Bases reutilizables
+
+   En Tailwind v4 solo se puede usar @apply con utilidades, no con clases
+   declaradas en @layer components. Las bases compartidas de botones y chips se
+   declaran como utilidades para poder componerlas sin repetir la lista entera.
+   ============================================================ */
+@utility btn-base {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl font-display font-semibold
+         transition-all duration-200 outline-none focus-visible:ring-4 whitespace-nowrap
+         cursor-pointer disabled:opacity-50 disabled:pointer-events-none;
+}
+
+@utility chip-base {
+  @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ring-1;
+}
+
+/* ============================================================
+   Componentes
+   ============================================================ */
+@layer components {
+  .container-app {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* --- Botones --- */
+  .btn { @apply btn-base; }
+
+  .btn-primary {
+    @apply btn-base bg-brand-600 text-white shadow-brand
+           hover:bg-brand-700 hover:-translate-y-px active:translate-y-0
+           focus-visible:ring-brand-200;
+  }
+
+  .btn-dark {
+    @apply btn-base bg-carbon-900 text-white shadow-float
+           hover:bg-carbon-800 hover:-translate-y-px active:translate-y-0
+           focus-visible:ring-carbon-300;
+  }
+
+  .btn-ghost {
+    @apply btn-base bg-white text-carbon-700 ring-1 ring-carbon-200
+           hover:ring-brand-300 hover:text-brand-700 hover:-translate-y-px
+           focus-visible:ring-brand-200;
+  }
+
+  .btn-soft {
+    @apply btn-base bg-brand-50 text-brand-700 hover:bg-brand-100 focus-visible:ring-brand-200;
+  }
+
+  .btn-danger {
+    @apply btn-base bg-danger-50 text-danger-700 ring-1 ring-danger-100
+           hover:bg-danger-100 focus-visible:ring-danger-100;
+  }
+
+  .btn-lg { @apply text-[0.95rem] px-6 py-3; }
+  .btn-md { @apply text-sm px-4 py-2.5; }
+  .btn-sm { @apply text-xs px-3 py-2; }
+
+  /* --- Superficies --- */
+  .card {
+    @apply rounded-3xl bg-white ring-1 ring-carbon-100 shadow-card;
+  }
+
+  .card-pad { @apply p-5 sm:p-6; }
+
+  /* --- Etiquetas --- */
+  .chip { @apply chip-base; }
+
+  .chip-neutral { @apply chip-base bg-carbon-50 text-carbon-600 ring-carbon-200; }
+  .chip-brand   { @apply chip-base bg-brand-50 text-brand-700 ring-brand-100; }
+  .chip-ok      { @apply chip-base bg-ok-50 text-ok-700 ring-ok-100; }
+  .chip-warn    { @apply chip-base bg-warn-50 text-warn-700 ring-warn-100; }
+  .chip-danger  { @apply chip-base bg-danger-50 text-danger-700 ring-danger-100; }
+
+  /* --- Formularios --- */
+  .label {
+    @apply block text-xs font-semibold uppercase tracking-wide text-carbon-500 mb-1.5;
+  }
+
+  .input {
+    @apply w-full rounded-xl border-0 bg-white px-3.5 py-2.5 text-sm text-carbon-900
+           ring-1 ring-carbon-200 outline-none transition
+           placeholder:text-carbon-400
+           focus:ring-2 focus:ring-brand-500
+           disabled:bg-carbon-50 disabled:text-carbon-400;
+  }
+
+  .input-error { @apply ring-danger-500 focus:ring-danger-500; }
+
+  .field-error { @apply mt-1.5 text-xs font-medium text-danger-600; }
+
+  /* --- Navegación lateral --- */
+  .nav-item {
+    @apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium
+           text-carbon-300 transition-colors hover:bg-white/10 hover:text-white;
+  }
+
+  .nav-item-active {
+    @apply bg-brand-600 text-white shadow-brand hover:bg-brand-600 hover:text-white;
+  }
+
+  /* --- Tablas densas de historial --- */
+  .table-head {
+    @apply px-4 py-3 text-left text-[0.7rem] font-semibold uppercase tracking-wider text-carbon-400;
+  }
+
+  .table-cell { @apply px-4 py-3.5 text-sm text-carbon-700 align-middle; }
+}
+
+/* ============================================================
+   Utilidades
+   ============================================================ */
+@utility grid-noise {
+  /* Rejilla técnica muy sutil para las superficies oscuras del landing. */
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-carbon-300) transparent;
+}
